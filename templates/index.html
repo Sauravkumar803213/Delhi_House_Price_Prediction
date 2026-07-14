@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  </head>
+  <body class="bg-dark">
+    <div class="container">
+        <div class="row">
+            <div class="card" style="width: 100%; height: 100%; margin-top: 50px">
+                <div class="card-header" style="text-align: center">
+                    <h1>Welcome to House Price Predictor</h1>
+                </div>
+                <div class="card-body">
+                 <form method="post" accept-charset="utf-8">
+                     <div class="row">
+                         <div class="col-md-6 form-group" style="text-align: center">
+                             <label><b>Select the Location:</b></label>
+                             <select class="selectpicker form-control" id="location" name="location" required="1">
+                               {% for location in locations %}
+                                 <option value="{{location}}">{{location}}</option>
+                                 {% endfor %}
+                             </select>
+                         </div>
+                            <div class="col-md-6 form-group" style="text-align: center">
+                             <label><b>Select the type of building:</b></label>
+                             <select class="selectpicker form-control" id="type_of_building" name="type_of_building" required="1">
+                               {% for type_of_building in type_of_buildings %}
+                                 <option value="{{type_of_building}}">{{type_of_building}}</option>
+                                 {% endfor %}
+                             </select>
+                         </div>
+                               <div class="col-md-6 form-group" style="text-align: center">
+                             <label><b>Enter the number of bedroom:</b></label>
+                             <input type="text" class="form-control" id="Bedrooms" name="Bedrooms" placeholder="Enter the no. of Bedrooms">
+                         </div>
+                               <div class="col-md-6 form-group" style="text-align: center">
+                             <label><b>Enter the number of bathroom:</b></label>
+                             <input type="text" class="form-control" id="Bathrooms" name="Bathrooms" placeholder="Enter the no. of Bathrooms">
+                         </div>
+                               <div class="col-md-6 form-group" style="text-align: center">
+                             <label><b>Enter area(in sqft):</b></label>
+                             <input type="text" class="form-control" id="area" name="area" placeholder="Enter area">
+                         </div>
+                           <div class="col-md-12 form-group", style="margin-top:30px;">
+                             <button class="btn btn-primary form-control" onclick="send_data()">Predict Price</button>
+                         </div>
+                     </div>
+                 </form>
+                 <br>
+                 <div class="col-md-12" style="text-align: center">
+                     <h3><span id="prediction"></span></h3>
+                 </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function form_handler(event) {
+    event.preventDefault(); // Don't submit the form normally
+
+}
+
+function send_data()
+ {
+
+    document.querySelector("form").addEventListener("submit", form_handler);
+
+    var fd = new FormData(document.querySelector('form'));
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.open("POST", "/predict", true);
+
+    document.getElementById("prediction").innerHTML ="Wait Predicting Price!...";
+
+  xhr.onreadystatechange = function () {
+
+    if (xhr.readyState == 4 && xhr.status == 200) {
+
+        var response = JSON.parse(xhr.responseText);
+
+        if (response.status == "error") {
+            document.getElementById("prediction").innerHTML =
+            "<span style='color:red'>" + response.message + "</span>";
+        }
+        else {
+            document.getElementById("prediction").innerHTML =
+            "Predicted Price: ₹ " + response.result;
+        }
+
+    }
+
+};
+
+xhr.send(fd)
+
+}
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  </body>
+</html>
