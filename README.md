@@ -157,7 +157,7 @@ The application is deployed on Render.
 
 **Live Demo**
 
-Paste your Render deployment link here.
+https://delhi-house-price-prediction-rp3v.onrender.com
 
 ---
 
